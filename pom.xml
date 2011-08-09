@@ -1,0 +1,94 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>Tigase XMPP Server Command Line Management Tool</name>
+    <groupId>tigase</groupId>
+    <artifactId>tclmt</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <packaging>jar</packaging>
+    <url>http://www.tigase.org</url>
+    <issueManagement>
+        <system>Redmine</system>
+        <url>https://projects.tigase.org/projects/tclmt</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License GPLv3</name>
+            <url>https://svn.tigase.org/reps/tclmt/trunk/COPYING</url>
+        </license>
+    </licenses>
+    
+    <organization>
+        <name>Tigase</name>
+        <url>http://www.tigase.org</url>
+    </organization>
+
+    <scm>
+        <connection>scm:svn:https://svn.tigase.org/reps/tclmt/trunk</connection>
+        <developerConnection>scm:svn:https://svn.tigase.org/reps/tclmt/trunk</developerConnection>
+        <url>https://svn.tigase.org/reps/tclmt</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <snapshots />
+            <id>tigase</id>
+            <name>Tigase rpos</name>
+            <url>http://maven.tigase.org</url>
+        </repository>  
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-j2se</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <packageName>tigase/tclmt</packageName>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <mainClass>tigase.tclmt.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.0.1</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/all.xml</descriptor>
+                    </descriptors>
+                    <finalName>${artifactId}-${version}</finalName>
+                </configuration>
+            </plugin>            
+        </plugins>
+    </build>
+</project>
