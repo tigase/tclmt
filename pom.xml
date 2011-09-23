@@ -74,7 +74,7 @@
                         <manifest>
                             <packageName>tigase/tclmt</packageName>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>tigase.tclmt.Main</mainClass>
+                            <mainClass>tigase.tclmt.Tclmt</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

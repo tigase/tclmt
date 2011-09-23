@@ -28,9 +28,7 @@ public class CommandManager {
                 scriptEngineManager = new ScriptEngineManager(CommandManager.class.getClassLoader());
         }
 
-        public void loadScripts() {
-
-                String[] dirs = new String[]{"scripts"};
+        public void loadScripts(String[] dirs) {
 
                 for (String dir : dirs) {
                         try {

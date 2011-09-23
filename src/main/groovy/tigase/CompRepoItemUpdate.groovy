@@ -51,7 +51,7 @@ data.getFields().each {
     if (it.getType().contains("list")) {
 	options = []
 	it.getChildren("option").each {
-	    options += it.getFirstChild("value").getValue();
+	    options += it.getFirstChild().getValue();
 	}
     }
 
@@ -92,7 +92,7 @@ data.getFields().each {
     		break;
     	    case "list-single":
     		if (value != null && value != "") {
-    		    def opts = it.getChildren("option").findAll { option -> option.getFirstChild("value").getValue() == value }
+    		    def opts = it.getChildren("option").findAll { option -> option.getFirstChild().getValue() == value }
     		    if (opts == null || opts.isEmpty()) {
     			console.writeLine "option '" + value + "' is not allowed for field = '" + label + "'"
     			return null;
@@ -105,7 +105,7 @@ data.getFields().each {
     		    def v = value.split(",");
     		    value = [];
     		    v.each { opt -> 
-    			if (it.getChildren("option").findAll { option -> option.getFirstChild("value").getValue() == opt } ) value += v;
+    			if (it.getChildren("option").findAll { option -> option.getFirstChild().getValue() == opt } ) value += v;
     		    }
     		    if (v.size() != value.size()) {
     			console.writeLine "some options are not allowed for field = '" + label + "'";

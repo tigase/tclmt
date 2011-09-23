@@ -18,7 +18,7 @@ public class Command extends Stanza {
                 super(new DefaultElement("iq"));
 
                 Element command = new DefaultElement("command");
-                command.setAttribute("xmlns", "http://jabber.org/protocol/commands");
+                command.setXMLNS("http://jabber.org/protocol/commands");
                 this.addChild(command);
 
                 Element x = new DefaultElement("x");

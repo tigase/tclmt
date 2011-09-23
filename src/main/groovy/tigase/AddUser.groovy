@@ -1,7 +1,7 @@
 /*
  SCR:CommandId:add-user
  SCR:Description:Adds user
- SCR:Help:user_jid password
+ SCR:Help:user_jid password email
  */
 
 import tigase.tclmt.*;
@@ -24,6 +24,7 @@ data.addTextSingleField('email', email);
 
 
 def resultPacket = conn.sendSync(packet);
+
 
 data = Command.getData(resultPacket);
 data.getFields().each { 
