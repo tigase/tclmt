@@ -179,7 +179,7 @@ public class Tclmt {
                 }
         }        
         
-        private String[] parseArgs(String[] args) {
+        protected String[] parseArgs(String[] args) {
                 if (args == null || args.length == 0) {
                         return new String[0];
                 }

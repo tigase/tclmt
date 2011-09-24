@@ -3,7 +3,10 @@ package tigase.tclmt;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.j2se.connectors.socket.SocketConnector;
 
 /**
  * Unit test for simple App.
@@ -53,6 +56,23 @@ public class AppTest
          * Rigourous Test :-)
          */
         public void testList() throws JaxmppException {                
+                tclmt.execute(new String[] { "list" });                
+                String consoleOut = console.toString();
+                assertFalse(consoleOut.contains("No script"));
+        }
+
+        /**
+         * Rigourous Test :-)
+         */
+        public void testParseArgs() throws JaxmppException {                
+                String[] rest = tclmt.parseArgs(new String[] {
+                        "-u", "admin@test.com",
+                        "-p", "password",
+                        "list"
+                });
+                assertEquals(conn.getProperties().getUserProperty(SessionObject.USER_JID), JID.jidInstance("admin@test.com"));
+                assertEquals(conn.getProperties().getUserProperty(SocketConnector.SERVER_HOST), "test.com");
+                assertEquals(conn.getProperties().getUserProperty(SessionObject.PASSWORD), "password");
                 tclmt.execute(new String[] { "list" });                
                 String consoleOut = console.toString();
                 assertFalse(consoleOut.contains("No script"));

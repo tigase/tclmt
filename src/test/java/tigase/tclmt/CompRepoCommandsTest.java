@@ -230,31 +230,7 @@ public class CompRepoCommandsTest
          * Test for comp-repo-item-remove command
          */
         public void testItemRemove() throws JaxmppException {                  
-                String incoming = //"<iq from=\"vhost-man@zeus\" type=\"result\" to=\"admin@zeus/Psi\" id=\"ab35a\">"
-//                        + "<command xmlns=\"http://jabber.org/protocol/commands\" status=\"executing\" node=\"comp-repo-item-remove\">"
-//                        + "<x xmlns=\"jabber:x:data\" type=\"form\">"
-//                        + "<field type=\"list-single\" label=\"List of items\" var=\"item-list\">"
-//                        + "<value>zeus</value>"
-//                        + "<option label=\"zeus\">"
-//                        + "<value>zeus</value>"
-//                        + "</option>"
-//                        + "<option label=\"test\">"
-//                        + "<value> test</value>"
-//                        + "</option>"
-//                        + "<option label=\"\">"
-//                        + "<value/>"
-//                        + "</option>"
-//                        + "<option label=\"dsfds\">"
-//                        + "<value>dsfds</value>"
-//                        + "</option>"
-//                        + "</field>"
-//                        + "</x>"
-//                        + "<actions execute=\"complete\">"
-//                        + "<complete/>"
-//                        + "</actions>"
-//                        + "</command>"
-//                        + "</iq>"
-                        "<iq type='result' to='test@test' id='10'><command xmlns='http://jabber.org/protocol/commands' node='comp-repo-add-item'><x xmlns='jabber:x:data'>"
+                String incoming = "<iq type='result' to='test@test' id='10'><command xmlns='http://jabber.org/protocol/commands' node='comp-repo-add-item'><x xmlns='jabber:x:data'>"
                                         + "<field var='note' type='text-single'><value>Operation successful</value></field></x></command></iq>";
                 
                 initializeIncoming(incoming);
@@ -277,6 +253,30 @@ public class CompRepoCommandsTest
                                 assertEquals("test.com", field.getFirstChild().getValue());
                         }
                 }
+                        
+                assertTrue(consoleOut.contains("successful"));
+        }
+
+        /**
+         * Test for comp-repo-item-remove command
+         */
+        public void testReload() throws JaxmppException {                  
+                String incoming = "<iq type='result' to='test@test' id='10'><command xmlns='http://jabber.org/protocol/commands' node='comp-repo-reload'><x xmlns='jabber:x:data'>"
+                                        + "<field var='note' type='text-single'><value>Operation successful</value></field></x></command></iq>";
+                
+                initializeIncoming(incoming);
+
+                tclmt.execute(new String[] { "comp-repo-reload", "vhost-man" });                
+                
+                List<Stanza> results = conn.getOutgoing();
+                
+                String consoleOut = console.toString();
+                
+                Stanza e = null;
+                assertTrue(!results.isEmpty());
+                e = results.remove(0);
+                Element command = e.getChildrenNS("command", COMMANDS_XMLNS);
+                assertEquals("comp-repo-reload", command.getAttribute("node"));
                         
                 assertTrue(consoleOut.contains("successful"));
         }

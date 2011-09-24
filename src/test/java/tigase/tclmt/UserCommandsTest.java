@@ -198,6 +198,76 @@ public class UserCommandsTest
                 assertTrue(consoleOut.contains("test2@localhost"));
         }
         
+        /**
+         * Test for get-online-users-list command
+         */
+        public void testGetActiveUsersList() throws JaxmppException {                
+                String incoming = "<iq type='result' to='test@test' id='10'><command xmlns='http://jabber.org/protocol/commands' node='http://jabber.org/protocol/admin#get-active-users'><x xmlns='jabber:x:data'>"
+                                        + "<field var='users' type='text-multi'><value>test1@localhost</value><value>test2@localhost</value></field></x></command></iq>";
+                
+                initializeIncoming(incoming);
+                
+                tclmt.execute(new String[] { "get-active-users-list", "localhost", "25" });                
+
+                List<Stanza> results = conn.getOutgoing();
+                
+                String consoleOut = console.toString();
+                
+                Stanza e = null;
+                assertTrue(!results.isEmpty());
+                e = results.remove(0);
+                Element command = e.getChildrenNS("command", COMMANDS_XMLNS);
+                assertEquals("http://jabber.org/protocol/admin#get-active-users", command.getAttribute("node"));
+                List<Element> fields = command.getChildrenNS("x", "jabber:x:data").getChildren("field");
+                assertTrue(!fields.isEmpty());
+                for (Element field : fields) {
+                        if ("domainjid".equals(field.getAttribute("var"))) {
+                                assertEquals("localhost", field.getFirstChild().getValue());
+                        }
+                        else if ("max_items".equals(field.getAttribute("var"))) {
+                                assertEquals("25", field.getFirstChild().getValue());
+                        }
+                }
+                
+                assertTrue(consoleOut.contains("test1@localhost"));
+                assertTrue(consoleOut.contains("test2@localhost"));
+        }
+
+        /**
+         * Test for get-online-users-list command
+         */
+        public void testGetIdleUsersList() throws JaxmppException {                
+                String incoming = "<iq type='result' to='test@test' id='10'><command xmlns='http://jabber.org/protocol/commands' node='http://jabber.org/protocol/admin#get-idle-users'><x xmlns='jabber:x:data'>"
+                                        + "<field var='users' type='text-multi'><value>test1@localhost</value><value>test2@localhost</value></field></x></command></iq>";
+                
+                initializeIncoming(incoming);
+                
+                tclmt.execute(new String[] { "get-idle-users-list", "localhost", "25" });                
+
+                List<Stanza> results = conn.getOutgoing();
+                
+                String consoleOut = console.toString();
+                
+                Stanza e = null;
+                assertTrue(!results.isEmpty());
+                e = results.remove(0);
+                Element command = e.getChildrenNS("command", COMMANDS_XMLNS);
+                assertEquals("http://jabber.org/protocol/admin#get-idle-users", command.getAttribute("node"));
+                List<Element> fields = command.getChildrenNS("x", "jabber:x:data").getChildren("field");
+                assertTrue(!fields.isEmpty());
+                for (Element field : fields) {
+                        if ("domainjid".equals(field.getAttribute("var"))) {
+                                assertEquals("localhost", field.getFirstChild().getValue());
+                        }
+                        else if ("max_items".equals(field.getAttribute("var"))) {
+                                assertEquals("25", field.getFirstChild().getValue());
+                        }
+                }
+                
+                assertTrue(consoleOut.contains("test1@localhost"));
+                assertTrue(consoleOut.contains("test2@localhost"));
+        }
+        
         public void initializeIncoming(String incoming) throws XMLException {                
                 XMPPDomBuilderHandler handler = new XMPPDomBuilderHandler(null);
                 char[] data = incoming.toCharArray();
