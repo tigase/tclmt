@@ -138,7 +138,7 @@ public class Tclmt {
                         }
                         catch (ScriptException ex) {
                                 if (!interactive)
-                                        throw new JaxmppException("Error executing script " + cmdId, ex);
+                                        throw new JaxmppException("Error executing script " + cmdId + "\n\t" + ex.getMessage(), ex);
                                 
                                 log.log(Level.WARNING, "Execution exception", ex);
                                 console.writeLine("Error executing script " + cmdId + "\n\t" + ex.getMessage());
@@ -230,8 +230,11 @@ public class Tclmt {
 
         private static void initLogging() {
                 try {
+//                        String config = ".level=ALL\ntigase.xml.level=INFO\ntigase.xmpp.level=INFO\nhandlers=java.util.logging.FileHandler\n"
+//                                + "java.util.logging.FileHandler.pattern=tclmt.log\n"
+//                                + "java.util.logging.FileHandler.level=ALL";
                         String config = "handlers=java.util.logging.FileHandler\n"
-                                + "java.util.logging.FileHandler.level = ALL";
+                                + "java.util.logging.FileHandler.level=ALL";
                         final ByteArrayInputStream bis = new ByteArrayInputStream(config.getBytes());
 
                         LogManager.getLogManager().readConfiguration(bis);

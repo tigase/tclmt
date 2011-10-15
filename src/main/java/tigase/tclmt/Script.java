@@ -70,6 +70,9 @@ public class Script {
                         engine = engineManager.getEngineByName(ext);
                 }
 
+                if (log.isLoggable(Level.FINER))
+                        log.finer("engine = " + (engine != null ? engine.toString() : "null"));
+                
                 if (engine instanceof Compilable) {
                         compiledScript = ((Compilable) engine).compile(script);
                 }

@@ -28,8 +28,15 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>src/main/python/tigase</directory>
+            <outputDirectory>scripts</outputDirectory>
             <includes>
-                <include>COPYING</include>
+                <include>*.py</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <includes>
+                <include>COPYING-</include>
             </includes>
         </fileSet>
     </fileSets>
