@@ -35,6 +35,7 @@ public class Tclmt {
         private static final String APPNAME = "Tigase XMPP Server Command Line Management Tool";
         private static final String USER_KEY = "-u";
         private static final String SERVER_KEY = "-s";
+        private static final String SERVER_IP_KEY = "-ip";
         private static final String PASSWORD_KEY = "-p";
         private static final String INTERACTIVE_KEY = "-i";
         private static final String HELP_KEY1 = "-h";
@@ -45,6 +46,7 @@ public class Tclmt {
 
         private String cmdId = "list";
         private String serverName = null;
+        private String serverIP = null;
         private boolean interactive = false;
         private CommandManager cmdManager;
         
@@ -89,8 +91,8 @@ public class Tclmt {
                 catch (JaxmppException ex) {
                         log.log(Level.SEVERE, null, ex);
                         console.writeLine(ex.getMessage());
-                        if (interactive)
-                                return;                        
+//                        if (interactive)
+                        return;                        
                 }
                 
                 cmdManager = new CommandManager();
@@ -192,7 +194,8 @@ public class Tclmt {
                                         i++;
                                         JID jid = JID.jidInstance(args[i]);
                                         conn.getProperties().setUserProperty(SessionObject.USER_JID, jid);
-                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, jid.getDomain());
+                                        if (serverIP == null)
+                                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, jid.getDomain());
                                         if (serverName == null)
                                                 serverName = jid.getDomain();
                                 }
@@ -203,6 +206,14 @@ public class Tclmt {
                                         //jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, args[i]);
                                         serverName = args[i];
                                 }
+                        }
+                        else if (SERVER_IP_KEY.equals(args[i])) {
+                                if (args.length > i + 1) {
+                                        i++;
+                                        //jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, args[i]);
+                                        serverIP = args[i];
+                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, serverIP);
+                                }                                
                         }
                         else if (PASSWORD_KEY.equals(args[i])) {
                                 if (args.length > i + 1) {
