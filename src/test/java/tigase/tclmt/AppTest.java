@@ -27,7 +27,7 @@ public class AppTest
         }
 
         @Override
-        public void setUp() {
+        public void setUp() throws JaxmppException {
                 console = new TestConsole();
                 conn = new TestSynchronizedConnection();
                 tclmt = new Tclmt(conn, console);

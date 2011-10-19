@@ -41,9 +41,11 @@ public class Tclmt {
         private static final String HELP_KEY1 = "-h";
         private static final String HELP_KEY2 = "-?";
 
+        private static final List<String> offlineCmds = Arrays.asList( "list", "help" );
+        
         private ConsoleIfc console = null;
         private SynchronizedConnection conn = null;
-
+        
         private String cmdId = "list";
         private String serverName = null;
         private String serverIP = null;
@@ -58,7 +60,10 @@ public class Tclmt {
                 conn.getProperties().setUserProperty(SessionObject.RESOURCE, "tclmt");
         }
         
-        public void initialize() {
+        public void initialize() throws JaxmppException {
+                cmdManager = new CommandManager();
+                cmdManager.loadScripts(new String[] { "scripts", "src/main/groovy/tigase" });                
+                
                 if (interactive) {
                         console.writeLine(APPNAME + " - ver. " + Main.class.getPackage().getImplementationVersion());
                         if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
@@ -73,31 +78,21 @@ public class Tclmt {
                         }
                 }     
          
-                try {
-                        PresenceModule presenceModule = conn.getModulesManager().getModule(PresenceModule.class);
-                        if (presenceModule != null)
-                                presenceModule.addListener(PresenceModule.BeforeInitialPresence,
-                                        new Listener<PresenceEvent>() {
+                PresenceModule presenceModule = conn.getModulesManager().getModule(PresenceModule.class);
+                if (presenceModule != null) {
+                        presenceModule.addListener(PresenceModule.BeforeInitialPresence,
+                                new Listener<PresenceEvent>() {
 
-                                                public void handleEvent(PresenceEvent be) throws JaxmppException {
-                                                        be.setPriority(-10);
-                                                        be.setStatus("tclmt");
-                                                        be.setShow(Show.online);
-                                                }
-                                        });
+                                        public void handleEvent(PresenceEvent be) throws JaxmppException {
+                                                be.setPriority(-10);
+                                                be.setStatus("tclmt");
+                                                be.setShow(Show.online);
+                                        }
+                                });
+                }
 
-                        conn.login(true);                        
-                }
-                catch (JaxmppException ex) {
-                        log.log(Level.SEVERE, null, ex);
-                        console.writeLine(ex.getMessage());
-//                        if (interactive)
-                        return;                        
-                }
-                
-                cmdManager = new CommandManager();
-                cmdManager.loadScripts(new String[] { "scripts", "src/main/groovy/tigase" });
-                
+                conn.login(true);
+                                
         }
         
         public void execute(String[] args) throws JaxmppException {
@@ -153,30 +148,34 @@ public class Tclmt {
                         console.writeLine("");
                 }
 
-                try {
-                        if (conn.isConnected()) {
-                                conn.disconnect();
-                        }
+                if (conn.isConnected()) {
+                        conn.disconnect();
                 }
-                catch (JaxmppException ex) {
-                        log.log(Level.SEVERE, "received Jaxmpp exception", ex);
-                }                
         }
         
         public static void main(String[] args) {
                 initLogging();
                 
                 ConsoleIfc console = new SystemConsole();
-                Tclmt tclmt = new Tclmt(new JaxmppConnection(console), console);
-                
-                args = tclmt.parseArgs(args);
-                
-                tclmt.initialize();
                 
                 try {
+                        Tclmt tclmt = new Tclmt(new JaxmppConnection(console), console);
+                
+                        args = tclmt.parseArgs(args);
+                        try {
+                                tclmt.initialize();
+                        }
+                        catch (JaxmppException ex) {
+//                                log.log(Level.SEVERE, null, ex);
+//                                console.writeLine(ex.getMessage());
+                                if (args.length != 0 && !offlineCmds.contains(args[0]))
+                                        throw ex;
+                        }
+                
                         tclmt.execute(args);
                 }
                 catch (JaxmppException ex) {
+                        log.log(Level.SEVERE, null, ex);
                         console.writeLine(ex.getMessage());
                 }
         }        
