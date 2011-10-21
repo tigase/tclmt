@@ -5,6 +5,7 @@
 package tigase.tclmt;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import tigase.jaxmpp.core.client.xmpp.stanzas.Presence.Show;
 import tigase.jaxmpp.j2se.Jaxmpp;
 import tigase.jaxmpp.j2se.connectors.socket.SocketConnector;
 import tigase.tclmt.ui.SystemConsole;
+import tigase.xml.db.XMLDBException;
 
 /**
  *
@@ -33,13 +35,6 @@ public class Tclmt {
 
         private static final Logger log = Logger.getLogger(Main.class.getCanonicalName());
         private static final String APPNAME = "Tigase XMPP Server Command Line Management Tool";
-        private static final String USER_KEY = "-u";
-        private static final String SERVER_KEY = "-s";
-        private static final String SERVER_IP_KEY = "-ip";
-        private static final String PASSWORD_KEY = "-p";
-        private static final String INTERACTIVE_KEY = "-i";
-        private static final String HELP_KEY1 = "-h";
-        private static final String HELP_KEY2 = "-?";
 
         private static final List<String> offlineCmds = Arrays.asList( "list", "help" );
         
@@ -47,9 +42,9 @@ public class Tclmt {
         private SynchronizedConnection conn = null;
         
         private String cmdId = "list";
-        private String serverName = null;
-        private String serverIP = null;
         private boolean interactive = false;
+        
+        private Config config = new Config();        
         private CommandManager cmdManager;
         
         public Tclmt(SynchronizedConnection conn, ConsoleIfc console) {
@@ -64,17 +59,62 @@ public class Tclmt {
                 cmdManager = new CommandManager();
                 cmdManager.loadScripts(new String[] { "scripts", "src/main/groovy/tigase" });                
                 
+//                try {
+//                        config = new Config();
+//                        if (configName != null) {
+//                                if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
+//                                        String jid = (String) config.getData(configName, Config.JID_KEY);
+//                                        JID userJid = JID.jidInstance(jid);
+//                                        conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
+//                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
+//                                }
+//                                if (conn.getProperties().getUserProperty(SessionObject.PASSWORD) == null) {
+//                                        String password = (String) config.getData(configName, Config.PASSWORD_KEY);
+//                                        conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+//                                }                                
+//                                if (serverName == null) {
+//                                        serverName = (String) config.getData(configName, Config.SERVER_NAME_KEY);
+//                                }
+//                                if (serverIP == null) {
+//                                        serverIP = (String) config.getData(configName, Config.SERVER_NAME_KEY);
+//                                        if (serverIP != null)
+//                                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, serverIP);
+//                                }
+//                        }
+//                }
+//                catch (IOException ex) {
+//                        Logger.getLogger(Tclmt.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                catch (XMLDBException ex) {
+//                        Logger.getLogger(Tclmt.class.getName()).log(Level.SEVERE, null, ex);
+//                }                
+
+                interactive = (Boolean) config.get(Config.INTERACTIVE_KEY);
                 if (interactive) {
                         console.writeLine(APPNAME + " - ver. " + Main.class.getPackage().getImplementationVersion());
-                        if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
+//                        if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
+//                                JID userJid = JID.jidInstance(console.readLine("Username:"));
+//                                String password = new String(console.readPassword("Password:"));
+//                        
+//                                conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
+//                                conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+//                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
+//                                if (serverName == null)
+//                                        serverName = userJid.getDomain();
+//                        }
+                        if (config.get(Config.JID_KEY) == null) {
                                 JID userJid = JID.jidInstance(console.readLine("Username:"));
                                 String password = new String(console.readPassword("Password:"));
                         
-                                conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
-                                conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
-                                if (serverName == null)
-                                        serverName = userJid.getDomain();
+                                config.put(Config.JID_KEY, userJid.toString());
+                                config.put(Config.PASSWORD_KEY, password);
+                                config.put(Config.SERVER_NAME_KEY, userJid.getDomain());
+                                config.put(Config.SERVER_IP_KEY, userJid.getDomain());
+//                                conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
+//                                conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+//                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
+//                                if (serverName == null)
+//                                        serverName = userJid.getDomain();
                         }
                 }     
          
@@ -91,8 +131,17 @@ public class Tclmt {
                                 });
                 }
 
+                if (config.get(Config.JID_KEY) != null) {
+                        conn.getProperties().setUserProperty(SessionObject.USER_JID, 
+                                JID.jidInstance((String) config.get(Config.JID_KEY)));
+                        conn.getProperties().setUserProperty(SessionObject.PASSWORD, 
+                                config.get(Config.PASSWORD_KEY));
+                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, 
+                                config.get(Config.SERVER_IP_KEY));
+                }
+                
                 conn.login(true);
-                                
+
         }
         
         public void execute(String[] args) throws JaxmppException {
@@ -128,7 +177,7 @@ public class Tclmt {
                                 bindings.put("args", args);
                                 bindings.put("console", console);
                                 bindings.put("connection", conn);
-                                bindings.put("serverName", serverName);
+                                bindings.put("serverName", config.get(Config.SERVER_NAME_KEY));
                                 bindings.put("bindings", bindings);
 
                                 Object result = cmdManager.executeScript(cmdId, bindings);
@@ -161,7 +210,7 @@ public class Tclmt {
                 try {
                         Tclmt tclmt = new Tclmt(new JaxmppConnection(console), console);
                 
-                        args = tclmt.parseArgs(args);
+                        args = tclmt.config.parseArgs(args);
                         try {
                                 tclmt.initialize();
                         }
@@ -172,6 +221,14 @@ public class Tclmt {
                                         throw ex;
                         }
                 
+                        try {
+                                tclmt.config.sync();
+                        }
+                        catch (Exception ex) {
+                                log.log(Level.WARNING, "configuration not saved due to exception", ex);
+                                console.writeLine("configuration not saved due to exception = "+ex.getMessage());
+                                ex.printStackTrace();
+                        }
                         tclmt.execute(args);
                 }
                 catch (JaxmppException ex) {
@@ -180,62 +237,8 @@ public class Tclmt {
                 }
         }        
         
-        protected String[] parseArgs(String[] args) {
-                if (args == null || args.length == 0) {
-                        return new String[0];
-                }
-
-                List<String> otherArgs = new ArrayList<String>();
-
-                for (int i = 0; i < args.length; i++) {
-                        if (USER_KEY.equals(args[i])) {
-                                if (args.length > i + 1) {
-                                        i++;
-                                        JID jid = JID.jidInstance(args[i]);
-                                        conn.getProperties().setUserProperty(SessionObject.USER_JID, jid);
-                                        if (serverIP == null)
-                                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, jid.getDomain());
-                                        if (serverName == null)
-                                                serverName = jid.getDomain();
-                                }
-                        }
-                        else if (SERVER_KEY.equals(args[i])) {
-                                if (args.length > i + 1) {
-                                        i++;
-                                        //jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, args[i]);
-                                        serverName = args[i];
-                                }
-                        }
-                        else if (SERVER_IP_KEY.equals(args[i])) {
-                                if (args.length > i + 1) {
-                                        i++;
-                                        //jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, args[i]);
-                                        serverIP = args[i];
-                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, serverIP);
-                                }                                
-                        }
-                        else if (PASSWORD_KEY.equals(args[i])) {
-                                if (args.length > i + 1) {
-                                        i++;
-                                        conn.getProperties().setUserProperty(SessionObject.PASSWORD, args[i]);
-                                }
-                        }
-                        else if (HELP_KEY1.equals(args[i]) || HELP_KEY2.equals(args[i])) {
-                                otherArgs.add("help");
-                        }                                
-                        else if (INTERACTIVE_KEY.equals(args[i])) {
-                                interactive = true;
-                        }
-                        else {
-                                otherArgs.add(args[i]);
-                        }
-                }
-
-//                if (otherArgs.size() > 0) {
-//                        cmdId = otherArgs.remove(0);
-//                }
-
-                return otherArgs.toArray(new String[otherArgs.size()]);
+        public String[] parseArgs(String[] args) {
+                return config.parseArgs(args);
         }
 
         private static void initLogging() {

@@ -70,6 +70,7 @@ public class AppTest
                         "-p", "password",
                         "list"
                 });
+                tclmt.initialize();
                 assertEquals(conn.getProperties().getUserProperty(SessionObject.USER_JID), JID.jidInstance("admin@test.com"));
                 assertEquals(conn.getProperties().getUserProperty(SocketConnector.SERVER_HOST), "test.com");
                 assertEquals(conn.getProperties().getUserProperty(SessionObject.PASSWORD), "password");
