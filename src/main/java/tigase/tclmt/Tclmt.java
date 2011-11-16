@@ -59,49 +59,10 @@ public class Tclmt {
                 cmdManager = new CommandManager();
                 cmdManager.loadScripts(new String[] { "scripts", "src/main/groovy/tigase" });                
                 
-//                try {
-//                        config = new Config();
-//                        if (configName != null) {
-//                                if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
-//                                        String jid = (String) config.getData(configName, Config.JID_KEY);
-//                                        JID userJid = JID.jidInstance(jid);
-//                                        conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
-//                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
-//                                }
-//                                if (conn.getProperties().getUserProperty(SessionObject.PASSWORD) == null) {
-//                                        String password = (String) config.getData(configName, Config.PASSWORD_KEY);
-//                                        conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-//                                }                                
-//                                if (serverName == null) {
-//                                        serverName = (String) config.getData(configName, Config.SERVER_NAME_KEY);
-//                                }
-//                                if (serverIP == null) {
-//                                        serverIP = (String) config.getData(configName, Config.SERVER_NAME_KEY);
-//                                        if (serverIP != null)
-//                                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, serverIP);
-//                                }
-//                        }
-//                }
-//                catch (IOException ex) {
-//                        Logger.getLogger(Tclmt.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                catch (XMLDBException ex) {
-//                        Logger.getLogger(Tclmt.class.getName()).log(Level.SEVERE, null, ex);
-//                }                
-
                 interactive = (Boolean) config.get(Config.INTERACTIVE_KEY);
                 if (interactive) {
                         console.writeLine(APPNAME + " - ver. " + Main.class.getPackage().getImplementationVersion());
-//                        if (conn.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
-//                                JID userJid = JID.jidInstance(console.readLine("Username:"));
-//                                String password = new String(console.readPassword("Password:"));
-//                        
-//                                conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
-//                                conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-//                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
-//                                if (serverName == null)
-//                                        serverName = userJid.getDomain();
-//                        }
+
                         if (config.get(Config.JID_KEY) == null) {
                                 JID userJid = JID.jidInstance(console.readLine("Username:"));
                                 String password = new String(console.readPassword("Password:"));
@@ -110,11 +71,6 @@ public class Tclmt {
                                 config.put(Config.PASSWORD_KEY, password);
                                 config.put(Config.SERVER_NAME_KEY, userJid.getDomain());
                                 config.put(Config.SERVER_IP_KEY, userJid.getDomain());
-//                                conn.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
-//                                conn.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-//                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
-//                                if (serverName == null)
-//                                        serverName = userJid.getDomain();
                         }
                 }     
          
@@ -153,18 +109,6 @@ public class Tclmt {
                                         break;
                                 }
 
-//                                int idx = line.indexOf(" ");
-//                                if (idx > 0) {
-//                                        cmdId = line.substring(0, idx);
-//                                }
-//                                else {
-//                                        cmdId = line;
-//                                        line = "";
-//                                }
-//                                args = line.substring(idx + 1).split(" ");
-//                                if (args.length == 1 && args[0].isEmpty()) {
-//                                        args = new String[0];
-//                                }
                                 args = line.split(" ");
                         }
 
@@ -179,6 +123,7 @@ public class Tclmt {
                                 bindings.put("connection", conn);
                                 bindings.put("serverName", config.get(Config.SERVER_NAME_KEY));
                                 bindings.put("bindings", bindings);
+                                bindings.put("interactive", interactive);
 
                                 Object result = cmdManager.executeScript(cmdId, bindings);
                         }
