@@ -17,6 +17,7 @@ public class Params {
         public static final String INTERACTIVE_KEY = "-i";
         public static final String CONFIG_KEY = "-c";
         public static final String SAVE_KEY = "-save";
+        public static final String DEBUG_KEY = "-debug";
         public static final String HELP_KEY1 = "-h";
         public static final String HELP_KEY2 = "-?";
         

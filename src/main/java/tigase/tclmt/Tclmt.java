@@ -148,7 +148,7 @@ public class Tclmt {
         }
         
         public static void main(String[] args) {
-                initLogging();
+                initLogging(false);
                 
                 ConsoleIfc console = new SystemConsole();
                 
@@ -156,12 +156,11 @@ public class Tclmt {
                         Tclmt tclmt = new Tclmt(new JaxmppConnection(console), console);
                 
                         args = tclmt.config.parseArgs(args);
+                        initLogging((Boolean) tclmt.config.get(Config.DEBUG_KEY));
                         try {
                                 tclmt.initialize();
                         }
                         catch (JaxmppException ex) {
-//                                log.log(Level.SEVERE, null, ex);
-//                                console.writeLine(ex.getMessage());
                                 if (args.length != 0 && !offlineCmds.contains(args[0]))
                                         throw ex;
                         }
@@ -186,13 +185,18 @@ public class Tclmt {
                 return config.parseArgs(args);
         }
 
-        private static void initLogging() {
+        private static void initLogging(boolean debug) {
                 try {
-//                        String config = ".level=ALL\ntigase.xml.level=INFO\ntigase.xmpp.level=INFO\nhandlers=java.util.logging.FileHandler\n"
-//                                + "java.util.logging.FileHandler.pattern=tclmt.log\n"
-//                                + "java.util.logging.FileHandler.level=ALL";
                         String config = "handlers=java.util.logging.FileHandler\n"
                                 + "java.util.logging.FileHandler.level=ALL";
+           
+                        if (debug)
+                                config = ".level=ALL\ntigase.xml.level=INFO\ntigase.xmpp.level=INFO\n"
+                                        + "handlers=java.util.logging.FileHandler\n"
+                                        + "java.util.logging.FileHandler.formatter=tigase.tclmt.util.LogFormatter\n"
+                                        + "java.util.logging.FileHandler.pattern=tclmt.log\n"
+                                        + "java.util.logging.FileHandler.level=ALL";
+                        
                         final ByteArrayInputStream bis = new ByteArrayInputStream(config.getBytes());
 
                         LogManager.getLogManager().readConfiguration(bis);

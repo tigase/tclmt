@@ -82,6 +82,8 @@ public class Script {
                 Object res = "";
 
                 try {
+                        Logger logger = Logger.getLogger(id);
+                        binds.put("log", logger);
                         binds.put("result", res);
                         context = engine.getContext();
                         context.setBindings(binds, ScriptContext.ENGINE_SCOPE);

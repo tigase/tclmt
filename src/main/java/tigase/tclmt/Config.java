@@ -38,6 +38,7 @@ public class Config {
         public static final String SERVER_IP_KEY = "server-ip";
         
         public static final String INTERACTIVE_KEY = "interactive";
+        public static final String DEBUG_KEY = "debug";
         
         public static final List<String> NOT_PERSISTABLE = Arrays.asList(INTERACTIVE_KEY);
         
@@ -203,6 +204,9 @@ public class Config {
                         }
                         else if (Params.SAVE_KEY.equals(args[i])) {
                                 save = true;
+                        }
+                        else if (Params.DEBUG_KEY.equals(args[i])) {
+                                params.put(DEBUG_KEY, true);
                         }
                         else {
                                 otherArgs.add(args[i]);
