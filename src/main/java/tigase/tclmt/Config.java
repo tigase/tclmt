@@ -55,6 +55,7 @@ public class Config {
                         
                 }
                 params.put(INTERACTIVE_KEY, false);
+                params.put(DEBUG_KEY, false);
         }
         
         public Object get(String key) {
