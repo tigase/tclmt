@@ -83,7 +83,7 @@ public class Config {
         
                         Object value = params.get(key);
                         if (PASSWORD_KEY.equals(key))
-                                value = Base64.encodeString((String) value);
+                                value = Base64.encode(((String) value).getBytes());
                         
                         setData(configName, key, value);
                 }
@@ -96,7 +96,7 @@ public class Config {
                         Object value = xmldb.getData(config, key);
                         
                         if (value != null && PASSWORD_KEY.equals(key))
-                                value = Base64.decodeString((String) value);
+                                value = Base64.decode((String) value);
                                 
                         return value;
                 }

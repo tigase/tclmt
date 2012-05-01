@@ -3,6 +3,7 @@ package tigase.tclmt;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
@@ -71,7 +72,7 @@ public class AppTest
                         "list"
                 });
                 tclmt.initialize();
-                assertEquals(conn.getProperties().getUserProperty(SessionObject.USER_JID), JID.jidInstance("admin@test.com"));
+                assertEquals(conn.getProperties().getUserProperty(SessionObject.USER_BARE_JID), BareJID.bareJIDInstance("admin@test.com"));
                 assertEquals(conn.getProperties().getUserProperty(SocketConnector.SERVER_HOST), "test.com");
                 assertEquals(conn.getProperties().getUserProperty(SessionObject.PASSWORD), "password");
                 tclmt.execute(new String[] { "list" });                

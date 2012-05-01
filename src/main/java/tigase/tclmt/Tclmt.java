@@ -15,6 +15,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.script.Bindings;
 import javax.script.ScriptException;
+import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
@@ -88,8 +89,8 @@ public class Tclmt {
                 }
 
                 if (config.get(Config.JID_KEY) != null) {
-                        conn.getProperties().setUserProperty(SessionObject.USER_JID, 
-                                JID.jidInstance((String) config.get(Config.JID_KEY)));
+                        conn.getProperties().setUserProperty(SessionObject.USER_BARE_JID, 
+                                BareJID.bareJIDInstance((String) config.get(Config.JID_KEY)));
                         conn.getProperties().setUserProperty(SessionObject.PASSWORD, 
                                 config.get(Config.PASSWORD_KEY));
                         conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, 

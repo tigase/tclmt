@@ -10,6 +10,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.script.Bindings;
 import javax.script.ScriptException;
+import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
@@ -77,11 +78,11 @@ public class Main {
 
                 if (interactive) {
                         console.writeLine(APPNAME + " - ver. " + Main.class.getPackage().getImplementationVersion());
-                        if (jaxmpp.getProperties().getUserProperty(SessionObject.USER_JID) == null) {
-                                JID userJid = JID.jidInstance(console.readLine("Username:"));
+                        if (jaxmpp.getProperties().getUserProperty(SessionObject.USER_BARE_JID) == null) {
+                                BareJID userJid = BareJID.bareJIDInstance(console.readLine("Username:"));
                                 String password = new String(console.readPassword("Password:"));
                         
-                                jaxmpp.getProperties().setUserProperty(SessionObject.USER_JID, userJid);
+                                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, userJid);
                                 jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
                                 jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, userJid.getDomain());
                                 if (serverName == null)
@@ -168,8 +169,8 @@ public class Main {
                         if (USER_KEY.equals(args[i])) {
                                 if (args.length > i + 1) {
                                         i++;
-                                        JID jid = JID.jidInstance(args[i]);
-                                        jaxmpp.getProperties().setUserProperty(SessionObject.USER_JID, jid);
+                                        BareJID jid = BareJID.bareJIDInstance(args[i]);
+                                        jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid);
                                         jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, jid.getDomain());
                                         if (serverName == null)
                                                 serverName = jid.getDomain();
