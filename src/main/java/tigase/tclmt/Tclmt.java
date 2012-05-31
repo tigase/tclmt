@@ -7,12 +7,16 @@ package tigase.tclmt;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.script.Bindings;
 import javax.script.ScriptException;
 import tigase.jaxmpp.core.client.BareJID;
@@ -23,8 +27,10 @@ import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule.PresenceEvent;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Presence.Show;
+import tigase.jaxmpp.j2se.DNSResolver;
 import tigase.jaxmpp.j2se.Jaxmpp;
 import tigase.jaxmpp.j2se.connectors.socket.SocketConnector;
+import tigase.jaxmpp.j2se.connectors.socket.SocketConnector.DnsResolver;
 import tigase.tclmt.ui.SystemConsole;
 import tigase.xml.db.XMLDBException;
 
@@ -93,12 +99,52 @@ public class Tclmt {
                                 BareJID.bareJIDInstance((String) config.get(Config.JID_KEY)));
                         conn.getProperties().setUserProperty(SessionObject.PASSWORD, 
                                 config.get(Config.PASSWORD_KEY));
-                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, 
-                                config.get(Config.SERVER_IP_KEY));
+                        if (config.get(Config.SERVER_IP_KEY) != null) {                                
+                                conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, 
+                                        config.get(Config.SERVER_IP_KEY));
+                        }
                 }
                 
-                conn.login(true);
+                BareJID jid = (BareJID) conn.getProperties().getUserProperty(SessionObject.USER_BARE_JID);
+                if (jid != null) {
+                        String host = jid.getDomain();
+                        if (config.get(Config.SERVER_IP_KEY) != null) {
+                                host = (String) config.get(Config.SERVER_IP_KEY);
+                        }
+                        try {
+                                List<SocketConnector.Entry> entries = DNSResolver.resolve(host);
+                                if (entries != null && !entries.isEmpty()) {
+                                        host = entries.get(0).getHostname();
+                                        host = InetAddress.getByName(host).getHostAddress();
+                                        conn.getProperties().setUserProperty(SocketConnector.SERVER_HOST, host);
+                                }
+                        } catch (UnknownHostException ex) {
+                                log.log(Level.SEVERE, ex.getMessage(), ex);                        
+                        } catch (NamingException ex) {
+                                log.log(Level.SEVERE, ex.getExplanation(), ex);
+                        }
 
+                        try {
+                                conn.login(true);
+                        } catch (Exception ex) {
+                                if (ex instanceof java.net.ConnectException) {
+                                        throw new JaxmppException("Could not connect to " + host, ex);
+                                } else {
+                                        throw new JaxmppException("Exception during connection to " + host + ":\n " + ex.getMessage(), ex);
+                                }
+                        }
+                }
+
+                int counter = 0;
+                while (!conn.isConnected()) {
+                        try {
+                                Thread.sleep(100);
+                                counter++;
+                                if (counter > 10) break;
+                        } catch (InterruptedException ex) {
+                                Logger.getLogger(Tclmt.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                }
         }
         
         public void execute(String[] args) throws JaxmppException {
@@ -149,12 +195,13 @@ public class Tclmt {
         }
         
         public static void main(String[] args) {
-                initLogging(false);
+                initLogging(true);
                 
                 ConsoleIfc console = new SystemConsole();
                 
+                Tclmt tclmt = null;
                 try {
-                        Tclmt tclmt = new Tclmt(new JaxmppConnection(console), console);
+                        tclmt = new Tclmt(new JaxmppConnection(console), console);
                 
                         args = tclmt.config.parseArgs(args);
                         initLogging((Boolean) tclmt.config.get(Config.DEBUG_KEY));
@@ -177,7 +224,7 @@ public class Tclmt {
                         tclmt.execute(args);
                 }
                 catch (JaxmppException ex) {
-                        log.log(Level.SEVERE, null, ex);
+                        log.log(Level.SEVERE, null, ex);                        
                         console.writeLine(ex.getMessage());
                 }
         }        

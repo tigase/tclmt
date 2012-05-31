@@ -23,6 +23,8 @@ public interface SynchronizedConnection {
         public UserProperties getProperties();
         
         public boolean isConnected();
+
+        
         
         public void login(boolean sync) throws JaxmppException;
         

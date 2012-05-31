@@ -5,6 +5,7 @@
 package tigase.tclmt;
 
 import java.util.logging.Level;
+import tigase.jaxmpp.core.client.Connector.ConnectorEvent;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
@@ -47,5 +48,5 @@ public class JaxmppConnection extends Jaxmpp implements SynchronizedConnection {
 
                 return callback.getResult();
         }
-        
+
 };

@@ -155,7 +155,7 @@ public class Config {
                                         i++;
                                         JID jid = JID.jidInstance(args[i]);
                                         params.put(JID_KEY, jid.toString());
-                                        params.putIfAbsent(SERVER_IP_KEY, jid.getDomain());
+//                                        params.putIfAbsent(SERVER_IP_KEY, jid.getDomain());
                                         params.putIfAbsent(SERVER_NAME_KEY, jid.getDomain());
 //                                        conn.getProperties().setUserProperty(SessionObject.USER_JID, jid);
 //                                        if (serverIP == null)
