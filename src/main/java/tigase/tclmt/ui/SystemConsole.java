@@ -1,31 +1,64 @@
 package tigase.tclmt.ui;
 
-import java.io.Console;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tigase.tclmt.ConsoleIfc;
 
 public class SystemConsole implements ConsoleIfc {
 
+        private final BufferedReader in;
+        private final PrintWriter out;
+        
         public SystemConsole() {
-        }
+                if (System.console() != null) {
+                        in = null;
+                        out = System.console().writer();
+                }
+                else {
+                        in = new BufferedReader(new InputStreamReader(System.in));
+                        out = new PrintWriter(System.out, true);
+                }
+        }        
 
         public void writeLine(Object obj) {
-                System.console().writer().println(obj);
+                out.println(obj);
         }
 
         public void writeLine(String format, Object... args) {
-                System.console().writer().printf(format + "\n", args);
+                out.printf(format + "\n", args);
         }
 
         public String readLine() {
-                return System.console().readLine();
+                if (in == null) {
+                        return System.console().readLine();
+                }
+                try {
+                        return in.readLine();
+        //                return System.console().readLine();
+                } catch (IOException ex) {
+                        return null;
+                }
         }
 
         public String readLine(String label) {
-                Console console = System.console();
-                return console.readLine("%s", label);
+                if (in == null) {
+                        return System.console().readLine("%s", label);
+                }
+                try {
+                        out.printf("%s", label);
+                        return in.readLine();
+        //                return System.console().readLine();
+                } catch (IOException ex) {
+                        return null;
+                }
         }
 
         public char[] readPassword(String label) {
-                return System.console().readPassword("%s", label);
+                if (in == null) {
+                        return System.console().readPassword("%s", label);
+                }
+                String line = readLine(label);
+                return line.toCharArray();
         }
 }
