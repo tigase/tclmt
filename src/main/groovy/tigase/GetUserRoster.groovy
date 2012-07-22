@@ -2,6 +2,7 @@
  SCR:CommandId:get-user-roster
  SCR:Description:Gets user roster
  SCR:Help:user_jid
+ Example: bin/tclmt.sh -u user@domain -p password -s node get-user-roster user2@domain2
  */
 
 import tigase.tclmt.*

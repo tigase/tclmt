@@ -2,6 +2,7 @@
  SCR:CommandId:comp-repo-item-remove
  SCR:Description:Removes component repository item
  SCR:Help:comp_name key ...
+ Example VHost: bin/tclmt.sh -u admin@domain -p "password" -s node comp-repo-item-remove vhost-man domain_to_remove
  */
 
 import tigase.tclmt.*

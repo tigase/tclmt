@@ -2,6 +2,7 @@
  SCR:CommandId:delete-user
  SCR:Description:Deletes user
  SCR:Help:user_jid <user_jid2>
+ Example: bin/tclmt.sh -u user@domain -p password -s node delete-user user2@domain2
  */
 
 import tigase.tclmt.*;

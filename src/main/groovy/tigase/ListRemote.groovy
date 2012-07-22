@@ -2,6 +2,7 @@
  SCR:CommandId:list-remote
  SCR:Description:Lists remote commands
  SCR:Help:comp_name
+ Example: bin/tclmt.sh -u user@domain -p password -s node list-remote vhost-man
  */
 
 import tigase.tclmt.*

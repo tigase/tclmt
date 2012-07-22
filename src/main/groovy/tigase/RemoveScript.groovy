@@ -2,6 +2,7 @@
  SCR:CommandId:del-script
  SCR:Description:Remove script
  SCR:Help:comp_name command_id
+ Example: bin/tclmt.sh -u user@domain -p password -s node del-script vhost-man cmd_id
  */
 
 import tigase.tclmt.*

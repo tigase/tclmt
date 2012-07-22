@@ -1,7 +1,8 @@
 /*
  SCR:CommandId:comp-repo-item-add
  SCR:Description:Adds component repository item
- SCR:Help:comp_name ...
+ SCR:Help:comp_name ...                                                                                                          	
+ Example VHost: bin/tclmt.sh -u admin@domain -p "password" -s node comp-repo-item-add vhost-man new_domain enabled anonymous register max_users presence_forward message_forward other_options owner_of@domain admin_of@domain
  */
 
 import tigase.tclmt.*

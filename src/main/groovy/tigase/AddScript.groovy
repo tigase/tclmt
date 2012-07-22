@@ -2,6 +2,7 @@
  SCR:CommandId:add-script
  SCR:Description:Adds script
  SCR:Help:comp_name command_id description language source_file
+ Example: bin/tclmt.sh -u user@domain -p password -s node add-script cmd-id "Command name" Groovy test/test.groovy
  */
 
 import tigase.tclmt.*

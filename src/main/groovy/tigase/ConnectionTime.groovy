@@ -2,6 +2,7 @@
  SCR:CommandId:connection-time
  SCR:Description:Gets maximum and avarage connection time for all connected users
  SCR:Help: 
+ Example: bin/tclmt.sh -u user@domain -p password -s node connection-time
  */
 
 import tigase.tclmt.*;

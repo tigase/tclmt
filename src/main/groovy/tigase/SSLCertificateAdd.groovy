@@ -2,6 +2,7 @@
  SCR:CommandId:ssl-certificate-add
  SCR:Description:Adds SSL certificate for domain
  SCR:Help:domain cert_file
+ Example: bin/tclmt.sh -u user@domain -p password -s node ssl-certificate-add domain.com /xyz/domain.pem
  */
 
 import tigase.tclmt.*

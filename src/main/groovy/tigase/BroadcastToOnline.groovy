@@ -2,6 +2,7 @@
  SCR:CommandId:announce
  SCR:Description:Sends announcement to online users
  SCR:Help:from subject message
+ Example: bin/tclmt.sh -u user@domain -p password -s node announce sender@domain "Subject" "Message to send"
  */
 
 import tigase.tclmt.*

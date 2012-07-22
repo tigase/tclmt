@@ -2,6 +2,7 @@
  SCR:CommandId:comp-repo-reload
  SCR:Description:Reloads component repository items
  SCR:Help:comp_name
+ Example VHost: bin/tclmt.sh -u admin@domain -p "password" -s node comp-repo-reload vhost-man
  */
 
 import tigase.tclmt.*

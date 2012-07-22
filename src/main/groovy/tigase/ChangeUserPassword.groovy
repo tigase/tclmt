@@ -2,6 +2,7 @@
  SCR:CommandId:change-user-password
  SCR:Description:Changes user password
  SCR:Help:user_jid password
+ Example: bin/tclmt.sh -u user@domain -p password -s node change-user-password user2@domain2 "new_password2"
  */
 
 import tigase.tclmt.*;

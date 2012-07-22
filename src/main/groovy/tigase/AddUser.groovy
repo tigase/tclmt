@@ -2,6 +2,7 @@
  SCR:CommandId:add-user
  SCR:Description:Adds user
  SCR:Help:user_jid password email
+ Example: bin/tclmt.sh -u user@domain -p password -s node add-user user2@domain2 "password2" user@email
  */
 
 import tigase.tclmt.*;

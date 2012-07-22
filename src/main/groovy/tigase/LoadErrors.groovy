@@ -2,6 +2,7 @@
  SCR:CommandId:load-errors
  SCR:Description:Gets load errors catched by the server during execution
  SCR:Help: 
+ Example: bin/tclmt.sh -u user@domain -p password -s node load-errors
  */
 
 import tigase.tclmt.*;

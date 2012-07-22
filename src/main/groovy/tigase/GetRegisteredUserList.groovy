@@ -2,6 +2,7 @@
  SCR:CommandId:get-registered-user-list
  SCR:Description:Gets list of registered users for domain
  SCR:Help:domain.com <max_items>
+ Example: bin/tclmt.sh -u user@domain -p password -s node get-registered-users-list domain.com 100
  */
 
 import tigase.tclmt.*;

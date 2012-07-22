@@ -2,6 +2,7 @@
  SCR:CommandId:user-stats
  SCR:Description:Gets user statistics
  SCR:Help:user_jid
+ Example: bin/tclmt.sh -u user@domain -p password -s node user-stats user2@domain2
  */
 
 import tigase.tclmt.*;

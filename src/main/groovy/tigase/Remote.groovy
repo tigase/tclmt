@@ -2,6 +2,7 @@
  SCR:CommandId:remote
  SCR:Description:Executes basic remote commands
  SCR:Help: componentName node args...
+ Example: bin/tclmt.sh -u user@domain -p password -s node remote componentName cmd_id [...(other parameters required by remote command)]
  */
 
 import tigase.tclmt.*

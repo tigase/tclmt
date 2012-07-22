@@ -2,6 +2,7 @@
  SCR:CommandId:config-list
  SCR:Description:Lists configuration of component
  SCR:Help:comp-name
+ Example: bin/tclmt.sh -u user@domain -p password -s node config-list
  */
 
 import tigase.tclmt.*;

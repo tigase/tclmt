@@ -2,6 +2,7 @@
  SCR:CommandId:comp-repo-item-update
  SCR:Description:Updates component repository item
  SCR:Help:comp_name key ...
+ Example VHost: bin/tclmt.sh -u admin@domain -p "password" -s node comp-repo-item-update vhost-man new_domain enabled anonymous register max_users presence_forward message_forward other_options owner_of@domain admin_of@domain
  */
 
 import tigase.tclmt.*
