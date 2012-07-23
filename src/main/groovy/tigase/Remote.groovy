@@ -124,7 +124,7 @@ while(packet != null) {
 	    case "jid-multi":
 		tmp = []
 		value.split(",").each { sjid -> tmp.add(JID.jidInstance(sjid)); }
-		data.addJidMultiField(it.getVar(), value.toArray(new JID[value.size()]));
+		data.addJidMultiField(it.getVar(), tmp.toArray(new JID[tmp.size()]));
 		break;
 
 	    case "list-single":
