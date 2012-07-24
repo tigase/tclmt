@@ -167,10 +167,10 @@ public class Config {
                         else if (Params.SERVER_KEY.equals(args[i])) {
                                 if (args.length > i + 1) {
                                         i++;
-                                        if (!params.containsKey(SERVER_NAME_KEY) || params.get(SERVER_NAME_KEY).equals(params.get(SERVER_IP_KEY))) {
-                                                params.put(SERVER_IP_KEY, args[i]);                                        
-                                        }
-                                        params.put(SERVER_NAME_KEY, args[i]);
+//                                        if (!params.containsKey(SERVER_NAME_KEY) || params.get(SERVER_NAME_KEY).equals(params.get(SERVER_IP_KEY))) {
+//                                                params.put(SERVER_IP_KEY, args[i]);                                        
+//                                        }
+                                        params.put(SERVER_IP_KEY, args[i]);
                                         //jaxmpp.getProperties().setUserProperty(SocketConnector.SERVER_HOST, args[i]);
 //                                        serverName = args[i];
                                 }

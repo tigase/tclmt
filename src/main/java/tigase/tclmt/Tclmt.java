@@ -20,6 +20,7 @@ import javax.naming.NamingException;
 import javax.script.Bindings;
 import javax.script.ScriptException;
 import tigase.jaxmpp.core.client.BareJID;
+import tigase.jaxmpp.core.client.Connector;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
@@ -58,8 +59,9 @@ public class Tclmt {
                 this.conn = conn;
                 this.console = console; 
         
-                conn.getProperties().setUserProperty(Jaxmpp.CONNECTOR_TYPE, "socket");
+                conn.getProperties().setUserProperty(Jaxmpp.CONNECTOR_TYPE, "socket");                
                 conn.getProperties().setUserProperty(SessionObject.RESOURCE, "tclmt");
+                conn.getProperties().setUserProperty(Connector.SEE_OTHER_HOST_KEY, false);
         }
         
         public void initialize() throws JaxmppException {
@@ -83,15 +85,15 @@ public class Tclmt {
          
                 PresenceModule presenceModule = conn.getModulesManager().getModule(PresenceModule.class);
                 if (presenceModule != null) {
-                        presenceModule.addListener(PresenceModule.BeforeInitialPresence,
-                                new Listener<PresenceEvent>() {
-
-                                        public void handleEvent(PresenceEvent be) throws JaxmppException {
-                                                be.setPriority(-10);
-                                                be.setStatus("tclmt");
-                                                be.setShow(Show.online);
-                                        }
-                                });
+//                        presenceModule.addListener(PresenceModule.BeforeInitialPresence,
+//                                new Listener<PresenceEvent>() {
+//
+//                                        public void handleEvent(PresenceEvent be) throws JaxmppException {
+//                                                be.setPriority(-10);
+//                                                be.setStatus("tclmt");
+//                                                be.setShow(Show.online);
+//                                        }
+//                                });
                 }
 
                 if (config.get(Config.JID_KEY) != null) {
@@ -112,6 +114,7 @@ public class Tclmt {
                                 host = (String) config.get(Config.SERVER_IP_KEY);
                         }
                         try {
+                                log.warning("connecting to = " + host);
                                 List<SocketConnector.Entry> entries = DNSResolver.resolve(host);
                                 if (entries != null && !entries.isEmpty()) {
                                         host = entries.get(0).getHostname();
@@ -195,7 +198,6 @@ public class Tclmt {
         }
         
         public static void main(String[] args) {
-                initLogging(true);
                 
                 ConsoleIfc console = new SystemConsole();
                 
