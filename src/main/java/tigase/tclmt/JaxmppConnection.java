@@ -9,6 +9,8 @@ import tigase.jaxmpp.core.client.Connector;
 import tigase.jaxmpp.core.client.Connector.ConnectorEvent;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
+import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.j2se.Jaxmpp;
 
@@ -22,6 +24,12 @@ public class JaxmppConnection extends Jaxmpp implements SynchronizedConnection {
 
         JaxmppConnection(ConsoleIfc console) {
                 this.console = console;
+                
+                PresenceModule presenceModule = getModulesManager().getModule(PresenceModule.class);
+                getModulesManager().unregister(presenceModule);
+                
+                RosterModule rosterModule = getModulesManager().getModule(RosterModule.class);
+                getModulesManager().unregister(rosterModule);
         }
 
         public Stanza sendSync(Stanza stanza) throws XMLException, JaxmppException {
