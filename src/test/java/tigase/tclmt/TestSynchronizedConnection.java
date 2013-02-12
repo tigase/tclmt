@@ -24,7 +24,11 @@ public class TestSynchronizedConnection implements SynchronizedConnection {
         private final List<Stanza> outgoing = new ArrayList<Stanza>();
         private final List<Stanza> incoming = new ArrayList<Stanza>();
         private final UserProperties userProps = new TestUserProperties();
-        private final XmppModulesManager modulesManager = new XmppModulesManager();
+        private final XmppModulesManager modulesManager;
+
+        public TestSynchronizedConnection() {
+                modulesManager = new XmppModulesManager(null, null);
+        }
         
         public List<Stanza> getOutgoing() {
                 return outgoing;
@@ -72,8 +76,9 @@ public class TestSynchronizedConnection implements SynchronizedConnection {
                         return (T) props.get(key);
                 }
 
-                public void setUserProperty(String key, Object value) {
+                public UserProperties setUserProperty(String key, Object value) {
                         props.put(key, value);
+                        return this;
                 }
                 
         }

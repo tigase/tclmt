@@ -5,6 +5,9 @@
 package tigase.tclmt;
 
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -12,6 +15,7 @@ import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.j2se.connectors.socket.StreamListener;
 import tigase.jaxmpp.j2se.connectors.socket.XMPPDomBuilderHandler;
 import tigase.jaxmpp.j2se.xml.J2seElement;
 import tigase.xml.SimpleParser;
@@ -121,11 +125,25 @@ public class UtilityCommandsTest
         }
 
         public void initializeIncoming(String incoming) throws XMLException {                
-                XMPPDomBuilderHandler handler = new XMPPDomBuilderHandler(null);
+                XMPPDomBuilderHandler handler = new XMPPDomBuilderHandler(new StreamListener() {
+
+                        public void nextElement(tigase.xml.Element e) {
+                                try {
+                                        conn.setIncoming(Stanza.create(new J2seElement(e)));
+                                } catch (JaxmppException ex) {
+                                        Logger.getLogger(CompRepoCommandsTest.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }
+
+                        public void xmppStreamClosed() {
+                        }
+
+                        public void xmppStreamOpened(Map<String, String> map) {
+                        }
+                        
+                });
+
                 char[] data = incoming.toCharArray();
                 parser.parse(handler, data, 0, data.length);
-                for (tigase.xml.Element e : handler.getParsedElements()) {
-                        conn.setIncoming(Stanza.create(new J2seElement(e)));
-                }
         }        
 }
