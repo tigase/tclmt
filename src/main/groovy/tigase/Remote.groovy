@@ -22,7 +22,7 @@ def printFirstChildValue = { resultData, label, name ->
 def valueAsString = { field ->
     def value = field.getFieldValue()
     if (field.getType().contains("list") || field.getType().contains("multi")) {
-	value = java.util.Arrays.asList(value).toString()
+		value = java.util.Arrays.asList(value).toString()
     }
     return value;
 }
@@ -41,111 +41,125 @@ def i = 2;
 // creating initial request
 
 def packet = new Command(null);
-packet.setAttribute("to", componentName+"@"+serverName);
+packet.setAttribute("to", (componentName.contains(".") || componentName.contains("@")) ? componentName : (componentName+"@"+serverName));
 Command.setNode(packet, node);
 
 try {
-while(packet != null) {
+	while(packet != null) {
 
-    // processing response
-    def resultPacket = conn.sendSync(packet);
-    if (resultPacket.getType() == StanzaType.error) {
-	def errorNames = [];
-	resultPacket.getChildren("error").get(0).getChildren().each { errorNames.add(it.getName()) };
-	console.writeLine("Errors: %s", errorNames)
-	break;
-    }
-    // fix for missing type of field
-    resultPacket.getChildren("command").get(0).getChildren("x").get(0).getChildren("field").each { it ->
-	if (!it.getAttribute("type"))
-	    it.setAttribute("type", "fixed");
-    }
-    def resultData = Command.getData(resultPacket)
+		// processing response
+		def resultPacket = conn.sendSync(packet);
+		if (resultPacket.getType() == StanzaType.error) {
+			def errorNames = [];
+			resultPacket.getChildren("error").get(0).getChildren().each { errorNames.add(it.getName()) };
+			console.writeLine("Errors: %s", errorNames)
+			break;
+		}
+		// fix for missing type of field
+		resultPacket.getChildren("command").get(0).getChildren("x").get(0).getChildren("field").each { it ->
+			if (!it.getAttribute("type"))
+			it.setAttribute("type", "fixed");
+		}
+		def resultData = Command.getData(resultPacket)
 
-    // preparing next request (will be used if needed)
-    packet = new Command(null);
-    packet.setAttribute("to", componentName+"@"+serverName);
-    Command.setNode(packet, node);
-    def data = Command.getData(packet);
+		// preparing next request (will be used if needed)
+		packet = new Command(null);
+		packet.setAttribute("to", (componentName.contains(".") || componentName.contains("@")) ? componentName : (componentName+"@"+serverName));
+		Command.setNode(packet, node);
+		def data = Command.getData(packet);
 
-    printFirstChildValue(resultData, "Title", "title");
-    printFirstChildValue(resultData, "Instructions", "instructions");
+		printFirstChildValue(resultData, "Title", "title");
+		printFirstChildValue(resultData, "Instructions", "instructions");
 
-    resultData.getFields().each {
-	def value = null;
+		resultData.getFields().each {
+			def value = null;
     
-	if (it.getType() == "hidden") {
-	    data.addHiddenField(it.getVar(), it.getFieldValue());
-    	    return;
-	}
-        else if (it.getType() == "fixed") {
-    	    console.writeLine("%s: %s", it.getLabel() ?: it.getVar(), it.getFieldValue());
-    	    return;
-        }
+			if (it.getType() == "hidden") {
+				data.addHiddenField(it.getVar(), it.getFieldValue());
+				return;
+			}
+			else if (it.getType() == "fixed") {
+				console.writeLine("%s: %s", it.getLabel() ?: it.getVar(), it.getFieldValue());
+				return;
+			}
     
-	if (resultData.getType() != XDataType.form) {
-	    printValue(it);
-	    return;
-	}
+			if (resultData.getType() != XDataType.form) {
+				printValue(it);
+				return;
+			}
     
-	if (i>(args.length-1)) {
-	    if (it.getFieldValue()) {
-		console.writeLine("%s [%s] [default=%s]", it.getLabel() ?: it.getVar(), it.getType(), valueAsString(it))
-	    }
-	    else {
-		console.writeLine("%s [%s]", it.getLabel() ?: it.getVar(), it.getType())
-	    }
-	    value = console.readLine(": ");
-	}
-        else {
-    	    value = args[i];
-        }
-	i++;
+			if (i>(args.length-1)) {
+				if (interactive) {
+					if (it.getFieldValue()) {
+						console.writeLine("%s [%s] [default=%s]", it.getLabel() ?: it.getVar(), it.getType(), valueAsString(it))
+					}
+					else {
+						console.writeLine("%s [%s]", it.getLabel() ?: it.getVar(), it.getType())
+					}
+					value = console.readLine(": ");
+				}
+				else {
+					value = it.getFieldValue();
+				}
+			}
+			else {
+				value = args[i];
+			}
+			i++;
     
-	switch(it.getType()) {
-	    case "text-single":
-		data.addTextSingleField(it.getVar(), value);
-		break;
+			if (value != null) {
+				switch(it.getType()) {
+				case "text-single":
+					data.addTextSingleField(it.getVar(), value);
+					break;
 
-	    case "text-multi":
-		value = value.split(",");
-		data.addTextMultiField(it.getVar(), value);
-		break;
+				case "text-multi":
+					try {
+						value = value.split(",")
+					} catch (Exception ex) {}
+					data.addTextMultiField(it.getVar(), value);
+					break;
 		
-	    case "text-private":
-		data.addTextPrivateField(it.getVar(), value);
-		break;
+				case "text-private":
+					data.addTextPrivateField(it.getVar(), value);
+					break;
 		
-	    case "jid-single":
-		value = JID.jidInstance(value);
-		data.addJidSingleField(it.getVar(), value);
-		break;
+				case "jid-single":
+					value = JID.jidInstance(value);
+					data.addJidSingleField(it.getVar(), value);
+					break;
 		
-	    case "jid-multi":
-		tmp = []
-		value.split(",").each { sjid -> tmp.add(JID.jidInstance(sjid)); }
-		data.addJidMultiField(it.getVar(), tmp.toArray(new JID[tmp.size()]));
+				case "jid-multi":
+					tmp = []
+					try {
+						value = value.split(",")
+					} catch (Exception ex) {}
+					value.each { sjid -> tmp.add(JID.jidInstance(sjid)); }
+					data.addJidMultiField(it.getVar(), tmp.toArray(new JID[tmp.size()]));
+					break;
+
+				case "list-single":
+					data.addListSingleField(it.getVar(), value);
+					break;
+
+				case "list-multi":
+					try {
+						value = value.split(",");
+					} catch (Exception ex) {}
+					data.addListMultiField(it.getVar(), value);
+					break;
+
+				case "boolean":
+					data.addBooleanField(it.getVar(), value == "true");
+					break;
+				}
+			}
+		}
+
+		if (resultData.getType() != XDataType.form)
 		break;
 
-	    case "list-single":
-		data.addListSingleField(it.getVar(), value);
-		break;
-
-	    case "list-multi":
-		value = value.split(",");
-		data.addListMultiField(it.getVar(), value);
-		break;
-
-	    case "boolean":
-		data.addBooleanField(it.getVar(), value == "true");
-		break;
 	}
-    }
-
-    if (resultData.getType() != XDataType.form)
-	break;
-
-}
 
 }
 catch (Exception ex) {

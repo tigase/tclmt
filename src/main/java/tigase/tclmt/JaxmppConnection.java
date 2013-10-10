@@ -13,6 +13,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.j2se.Jaxmpp;
+import tigase.jaxmpp.j2se.connectors.socket.SocketConnector;
 
 /**
  *
@@ -30,6 +31,8 @@ public class JaxmppConnection extends Jaxmpp implements SynchronizedConnection {
                 
                 RosterModule rosterModule = getModulesManager().getModule(RosterModule.class);
                 getModulesManager().unregister(rosterModule);
+				
+				this.getSessionObject().setUserProperty(SocketConnector.COMPRESSION_DISABLED_KEY, true);
         }
 
         public Stanza sendSync(Stanza stanza) throws XMLException, JaxmppException {
