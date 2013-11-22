@@ -6,7 +6,7 @@
 
 if (args == null || args.length == 0) {
     console.writeLine "Usage:";
-    console.writeLine "\ttclmt <-u username> <-p password> <-s server> <-ip server_ip> <-i>"
+    console.writeLine "\ttclmt <-debug> <-u username> <-p password> <-s server> <-ip server_ip> <-i>"
     console.writeLine "\t\t-i\t-\tinteractive mode"
     console.writeLine "";
     return commandManager.executeScript("list", bindings);
