@@ -1,12 +1,11 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <name>Tigase XMPP Server Command Line Management Tool</name>
     <groupId>tigase</groupId>
     <artifactId>tclmt</artifactId>
     <version>1.0.0</version>
-    
+
     <packaging>jar</packaging>
     <url>http://www.tigase.org</url>
     <issueManagement>
@@ -20,7 +19,7 @@
             <url>https://svn.tigase.org/reps/tclmt/trunk/COPYING</url>
         </license>
     </licenses>
-    
+
     <organization>
         <name>Tigase</name>
         <url>http://www.tigase.org</url>
@@ -35,13 +34,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<sign-keystore>/path/to/jks.keystore</sign-keystore>
-		<sign-alias>alias</sign-alias>
-		<sign-storepass>storepass</sign-storepass>
-		<sign-keypass>keypass</sign-keypass>
-		<sign-skip>true</sign-skip>
-		<verbose-log>false</verbose-log>
-		<tsa>${tsa-uri}</tsa>
+        <sign-keystore>/path/to/jks.keystore</sign-keystore>
+        <sign-alias>alias</sign-alias>
+        <sign-storepass>storepass</sign-storepass>
+        <sign-keypass>keypass</sign-keypass>
+        <sign-skip>true</sign-skip>
+        <verbose-log>false</verbose-log>
+        <tsa>${tsa-uri}</tsa>
     </properties>
 
     <dependencies>
@@ -88,64 +87,64 @@
                     </descriptors>
                     <finalName>${project.artifactId}-${project.version}</finalName>
                 </configuration>
-            </plugin>            
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jarsigner-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>sign</id>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archiveDirectory>${project.basedir}</archiveDirectory>
-					<includes>
-						<include>target/tigase*.?ar</include>
-						<include>jars/tigase*.?ar</include>
-					</includes>
-					<processMainArtifact>false</processMainArtifact>
-					<processAttachedArtifacts>false</processAttachedArtifacts>
-					<tsa>${tsa-uri}</tsa>
-					<skip>${sign-skip}</skip>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archiveDirectory>${project.basedir}</archiveDirectory>
+                    <includes>
+                        <include>target/tigase*.?ar</include>
+                        <include>jars/tigase*.?ar</include>
+                    </includes>
+                    <processMainArtifact>false</processMainArtifact>
+                    <processAttachedArtifacts>false</processAttachedArtifacts>
+                    <tsa>${tsa-uri}</tsa>
+                    <skip>${sign-skip}</skip>
 
-					<keystore>${sign-keystore}</keystore>
-					<alias>${sign-alias}</alias>
-					<storepass>${sign-storepass}</storepass>
-					<keypass>${sign-keypass}</keypass>
-					<verbose>${verbose-log}</verbose>
-				</configuration>
-			</plugin>
+                    <keystore>${sign-keystore}</keystore>
+                    <alias>${sign-alias}</alias>
+                    <storepass>${sign-storepass}</storepass>
+                    <keypass>${sign-keypass}</keypass>
+                    <verbose>${verbose-log}</verbose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-	<repositories>
-		<repository>
-			<id>tigase</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/release</url>
-		</repository>
-		<repository>
-			<id>tigase-snapshot</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>tigase</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>tigase-snapshot</id>
-			<name>Tigase snapshot repository</name>
-			<url>http://maven-repo.tigase.org/repository/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <repositories>
+        <repository>
+            <id>tigase</id>
+            <name>Tigase repository</name>
+            <url>http://maven-repo.tigase.org/repository/release</url>
+        </repository>
+        <repository>
+            <id>tigase-snapshot</id>
+            <name>Tigase repository</name>
+            <url>http://maven-repo.tigase.org/repository/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>tigase</id>
+            <name>Tigase repository</name>
+            <url>http://maven-repo.tigase.org/repository/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>tigase-snapshot</id>
+            <name>Tigase snapshot repository</name>
+            <url>http://maven-repo.tigase.org/repository/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
